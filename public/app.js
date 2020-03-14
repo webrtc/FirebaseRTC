@@ -30,6 +30,7 @@ async function createRoom() {
   document.querySelector('#createBtn').disabled = true;
   document.querySelector('#joinBtn').disabled = true;
   const db = firebase.firestore();
+  const roomRef = await db.collection('rooms').doc();
 
   console.log('Create PeerConnection with configuration: ', configuration);
   peerConnection = new RTCPeerConnection(configuration);
@@ -39,24 +40,6 @@ async function createRoom() {
   localStream.getTracks().forEach(track => {
     peerConnection.addTrack(track, localStream);
   });
-
-  // Code for creating a room below
-  const offer = await peerConnection.createOffer();
-  await peerConnection.setLocalDescription(offer);
-  console.log('Created offer:', offer);
-
-  const roomWithOffer = {
-    'offer': {
-      type: offer.type,
-      sdp: offer.sdp,
-    },
-  };
-  const roomRef = await db.collection('rooms').add(roomWithOffer);
-  roomId = roomRef.id;
-  console.log(`New room created with SDP offer. Room ID: ${roomRef.id}`);
-  document.querySelector(
-      '#currentRoom').innerText = `Current room is ${roomRef.id} - You are the caller!`;
-  // Code for creating a room above
 
   // Code for collecting ICE candidates below
   const callerCandidatesCollection = roomRef.collection('callerCandidates');
@@ -70,6 +53,24 @@ async function createRoom() {
     callerCandidatesCollection.add(event.candidate.toJSON());
   });
   // Code for collecting ICE candidates above
+
+  // Code for creating a room below
+  const offer = await peerConnection.createOffer();
+  await peerConnection.setLocalDescription(offer);
+  console.log('Created offer:', offer);
+
+  const roomWithOffer = {
+    'offer': {
+      type: offer.type,
+      sdp: offer.sdp,
+    },
+  };
+  await roomRef.set(roomWithOffer);
+  roomId = roomRef.id;
+  console.log(`New room created with SDP offer. Room ID: ${roomRef.id}`);
+  document.querySelector(
+      '#currentRoom').innerText = `Current room is ${roomRef.id} - You are the caller!`;
+  // Code for creating a room above
 
   peerConnection.addEventListener('track', event => {
     console.log('Got remote track:', event.streams[0]);
