@@ -1,5 +1,6 @@
 {
   "projects": {
-    "default": "fir-rtc-89b99"
+    "default": "fir-rtc-89b99",
+    "staging": "zippy-86c76"
   }
 }
