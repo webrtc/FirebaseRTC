@@ -83,7 +83,7 @@ async function createRoom() {
   // Listening for remote session description below
   roomRef.onSnapshot(async snapshot => {
     const data = snapshot.data();
-    if (!peerConnection.currentRemoteDescription && data.answer) {
+    if (!peerConnection.currentRemoteDescription && data && data.answer) {
       console.log('Got remote description: ', data.answer);
       const rtcSessionDescription = new RTCSessionDescription(data.answer);
       await peerConnection.setRemoteDescription(rtcSessionDescription);
@@ -227,11 +227,11 @@ async function hangUp(e) {
     const roomRef = db.collection('rooms').doc(roomId);
     const calleeCandidates = await roomRef.collection('calleeCandidates').get();
     calleeCandidates.forEach(async candidate => {
-      await candidate.delete();
+      await candidate.ref.delete();
     });
     const callerCandidates = await roomRef.collection('callerCandidates').get();
     callerCandidates.forEach(async candidate => {
-      await candidate.delete();
+      await candidate.ref.delete();
     });
     await roomRef.delete();
   }
