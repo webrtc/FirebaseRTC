@@ -36,22 +36,18 @@ async function createRoom() {
   peerConnection = new RTCPeerConnection(configuration);
 
   registerPeerConnectionListeners();
-
-  // Add code for creating a room here
-  
-  // Code for creating room above
   
   localStream.getTracks().forEach(track => {
     peerConnection.addTrack(track, localStream);
   });
 
-  // Code for creating a room below
-
-  // Code for creating a room above
-
   // Code for collecting ICE candidates below
 
   // Code for collecting ICE candidates above
+
+  // Code for creating a room below
+
+  // Code for creating a room above
 
   peerConnection.addEventListener('track', event => {
     console.log('Got remote track:', event.streams[0]);
