@@ -1,6 +1,6 @@
 mdc.ripple.MDCRipple.attachTo(document.querySelector('.mdc-button'));
 
-// DEfault configuration - Change these if you have a different STUN or TURN server.
+// Default configuration - Change these if you have a different STUN or TURN server.
 const configuration = {
   iceServers: [
     {
