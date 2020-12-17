@@ -74,8 +74,8 @@ Before starting this codelab, make sure that you've installed:
         - `firebase serve --only hosting --interactive` on git-bash
         Your command line should display the following response: 
             > hosting: Local server: http://localhost:5000
-        We're using the Firebase Hosting emulator to serve our app locally. The web app should now be available from [http://localhost:5000].
-    1. Open your app at [http://localhost:5000]
+        - We're using the Firebase Hosting emulator to serve our app locally. The web app should now be available from http://localhost:5000.
+    1. Open your app at http://localhost:5000
         You should see your copy of FirebaseRTC which has been connected to your Firebase project.
     The app has automatically connected to your Firebase project.
     
