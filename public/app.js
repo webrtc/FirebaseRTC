@@ -159,6 +159,26 @@ async function joinRoomById(roomId) {
   }
 }
 
+async function collectIceCandidates(roomRef, peerConnection, localName, remoteName) {
+	const candidatesCollection = roomRef.collection(localName);
+
+	peerConnection.addEventListener('icecandidate', event -> {
+		if (event.candidate) {
+			const json = event.candidate.toJSON();
+			candidatesColection.add(json);
+		}
+	});
+
+	roomRef.collection(remoteName.onSnapshot(snapshot -> {
+		snapshot.docChanges().forEach(change -> {
+			if (change.type === "added") {
+				const candidate = new RTCIceCandidate(change.doc.data());
+				peerConnection.addIceCandidate(candidate);
+			}
+		});
+	});
+}
+
 async function openUserMedia(e) {
   const stream = await navigator.mediaDevices.getUserMedia(
       {video: true, audio: true});
