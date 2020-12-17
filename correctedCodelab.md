@@ -23,6 +23,7 @@ Before starting this codelab, make sure that you've installed:
             >Note: If you go to the home page of your project, you can see it in Settings > Project Settings (or look at the URL!)
         - Disable Google Analytics
         - Click Create project.
+        - Creation takes a moment.  When you project is created, click Continue.
 
     The application that you're going to build uses two Firebase services available on the web:
     * Cloud Firestore
@@ -33,28 +34,22 @@ Before starting this codelab, make sure that you've installed:
     For this specific codelab, you've already configured Firebase Hosting in the project you'll be cloning. However, for Cloud Firestore, we'll walk you through the configuration and enabling of the services using the Firebase console.
 
 1. Enable Cloud Firestore
-The app uses Cloud Firestore to save the chat messages and receive new chat messages.
+    The app uses Cloud Firestore to save the chat messages and receive new chat messages.
+    1. In the Firebase sidebar, navigate to Build -> Cloud Firestore.
+    1. Click __Create database__ in the Cloud Firestore pane.
+    1. Select the __Start in test mode__ option, then click __Enable__ after reading the disclaimer about the security rules.
+    Test mode ensures that you can freely write to the database during development. We'll make our database more secure later on in this codelab. (TODO: ...this tutorial doesn't handle making the database more secure...just...so you know)
 
-You'll need to enable Cloud Firestore:
+1. Get the sample code
+    1. On your local machine, clone the codelab GitHub repository from the command line:
+        `git clone https://github.com/webrtc/FirebaseRTC`
+        The sample code should have been cloned into the FirebaseRTC directory. Make sure your command line is run from this directory from now on: 
+        `cd FirebaseRTC`
+    1. Import the starter app
 
-In the Firebase console menu's Develop section, click Database.
-Click Create database in the Cloud Firestore pane.
-Select the Start in test mode option, then click Enable after reading the disclaimer about the security rules.
-Test mode ensures that you can freely write to the database during development. We'll make our database more secure later on in this codelab.
-
-1) Get the sample code
-Clone the GitHub repository from the command line:
-
-
-git clone https://github.com/webrtc/FirebaseRTC
-The sample code should have been cloned into the FirebaseRTC directory. Make sure your command line is run from this directory from now on:
-
-
-cd FirebaseRTC
-Import the starter app
-Open the files in FirebaseRTC in your editor and change them according to the instructions below. This directory contains the starting code for the codelab which consists of a not-yet functional WebRTC app. We'll make it functional throughout this codelab.
-
-1) Install the Firebase Command Line Interface
+    As you work through the tutorial, open the files in `FirebaseRTC`in your editor and change them according to the instructions below. This directory contains the starting code for the codelab which consists of a not-yet functional WebRTC app. We'll make it functional throughout this codelab.
+    
+1. Install the Firebase Command Line Interface
 The Firebase Command Line Interface (CLI) allows you to serve your web app locally and deploy your web app to Firebase Hosting.
 
 Note: To install the CLI, you need to install npm which typically comes with Node.js.
