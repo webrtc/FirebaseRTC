@@ -34,6 +34,7 @@ Before starting this codelab, make sure that you've installed:
     For this specific codelab, you've already configured Firebase Hosting in the project you'll be cloning. However, for Cloud Firestore, we'll walk you through the configuration and enabling of the services using the Firebase console.
 
 1. __Enable Cloud Firestore__
+    
     The app uses Cloud Firestore to save the chat messages and receive new chat messages.
     1. In the Firebase sidebar, navigate to Build -> Cloud Firestore.
     1. Click __Create database__ in the Cloud Firestore pane.
@@ -51,6 +52,7 @@ Before starting this codelab, make sure that you've installed:
     As you work through the tutorial, open the files in `FirebaseRTC`in your editor and change them according to the instructions below. This directory contains the starting code for the codelab which consists of a not-yet functional WebRTC app. We'll make it functional throughout this codelab.
     
 1. __Install the Firebase Command Line Interface__
+    
     The Firebase Command Line Interface (CLI) allows you to serve your web app locally and deploy your web app to Firebase Hosting.
     > Note: To install the CLI, you need to install npm which typically comes with Node.js.
     1. Install the CLI by running the following npm command: `sh npm -g install firebase-tools` 
@@ -69,6 +71,7 @@ Before starting this codelab, make sure that you've installed:
     1. Follow the remaining instructions in your command line.
     
 1. __Run the local server__
+    
     You're ready to actually start work on our app! Let's run the app locally!
     1. Run the following Firebase CLI command: `sh firebase serve --only hosting`
         - `firebase serve --only hosting --interactive` on git-bash
@@ -80,6 +83,7 @@ Before starting this codelab, make sure that you've installed:
     The app has automatically connected to your Firebase project.
     
 1. __Creating a new room__
+    
     In this application, each video chat session is called a __room__. A user can create a new room by clicking a button in their application. This will generate an ID that the remote party can use to join the same room. The ID is used as the key in Cloud Firestore for each room.
     
     Each room will contain the RTCSessionDescriptions for both the offer and the answer, as well as two separate collections with [ICE candidates](https://webrtcglossary.com/ice/#:~:text=ICE%20stands%20for%20Interactive%20Connectivity,NAT%20traversal%20used%20in%20WebRTC.) from each party.
@@ -118,6 +122,7 @@ Before starting this codelab, make sure that you've installed:
     This will wait until the callee writes the RTCSessionDescription for the answer, and set that as the remote description on the caller RTCPeerConnection.
 
 1. __Joining a room__
+    
     The next step is to implement the logic for joining an existing room. The user does this by clicking the Join room button and entering the ID for the room to join. Your task here is to implement the creation of the RTCSessionDescription for the answer and update the room in the database accordingly.
 
     ```
@@ -137,6 +142,7 @@ Before starting this codelab, make sure that you've installed:
     In the code above, we start by extracting the offer from the caller and creating a RTCSessionDescription that we set as the remote description. Next, we create the answer, set it as the local description, and update the database. The update of the database will trigger the onSnapshot callback on the caller side, which in turn will set the remote description based on the answer from the callee. This completes the exchange of the RTCSessionDescription objects between the caller and the callee.
 
 1. Collect ICE candidates
+    
     Before the caller and callee can connect to each other, they also need to exchange ICE candidates that tell WebRTC how to connect to the remote peer. Your next task is to implement the code that listens for ICE candidates and adds them to a collection in the database. Find the function collectIceCandidates and add the following code:
 
     ```
@@ -164,6 +170,7 @@ Before starting this codelab, make sure that you've installed:
     This function does two things. It collects ICE candidates from the WebRTC API and adds them to the database, and listens for added ICE candidates from the remote peer and adds them to its RTCPeerConnection instance. It is important when listening to database changes to filter out anything that isn't a new addition, since we otherwise would have added the same set of ICE candidates over and over again.
 
 1. Conclusion
+    
     In this codelab you learned how to implement signaling for WebRTC using Cloud Firestore, as well as how to use that for creating a simple video chat application.
 
     To learn more, visit the following resources:
