@@ -25,12 +25,14 @@ Before starting this codelab, make sure that you've installed:
         - Click Create project.
 
     The application that you're going to build uses two Firebase services available on the web:
+    * Cloud Firestore
+        - to save structured data on the Cloud and get instant notification when the data is updated
+    * Firebase Hosting
+        - to host and serve your static assets
 
-Cloud Firestore to save structured data on the Cloud and get instant notification when the data is updated
-Firebase Hosting to host and serve your static assets
-For this specific codelab, you've already configured Firebase Hosting in the project you'll be cloning. However, for Cloud Firestore, we'll walk you through the configuration and enabling of the services using the Firebase console.
+    For this specific codelab, you've already configured Firebase Hosting in the project you'll be cloning. However, for Cloud Firestore, we'll walk you through the configuration and enabling of the services using the Firebase console.
 
-Enable Cloud Firestore
+1. Enable Cloud Firestore
 The app uses Cloud Firestore to save the chat messages and receive new chat messages.
 
 You'll need to enable Cloud Firestore:
