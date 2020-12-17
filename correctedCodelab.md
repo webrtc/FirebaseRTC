@@ -1,7 +1,7 @@
 # Firebase + WebRTC Codelab
 
-
 ## Introduction
+
 In this codelab, you'll learn how to build a simple video chat application using the WebRTC API in your browser and Cloud Firestore for signaling. The application is called FirebaseRTC and works as a simple example that will teach you the basics of building WebRTC enabled applications.
 
 > Note: Another option for signaling could be Firebase Cloud Messaging. However, that is currently only supported in Chrome and in this codelab we will focus on a solution that works across all browsers supporting WebRTC.
@@ -12,18 +12,16 @@ In this codelab, you'll learn how to build a simple video chat application using
 
 ### What you'll need
 Before starting this codelab, make sure that you've installed:
-
 * npm which typically comes with Node.js - Node LTS is recommended
 
 ## Instructions
 
-1) Create and set up a Firebase project
-
-* Create a Firebase project
-In the Firebase console, click Add project, then name the Firebase project FirebaseRTC.
-Remember the Project ID for your Firebase project.
-
-Note: If you go to the home page of your project, you can see it in Settings > Project Settings (or look at the URL!)
+1. Create and set up a Firebase project
+    1. Create a Firebase project
+        - [In the Firebase console](https://console.firebase.google.com/), click Add project, then name the Firebase project "FirebaseRTC".
+        - Remember the Project ID for your Firebase project.
+        - Disable Google Analytics and create the project
+>Note: If you go to the home page of your project, you can see it in Settings > Project Settings (or look at the URL!)
 Click Create project.
 The application that you're going to build uses two Firebase services available on the web:
 
