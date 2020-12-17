@@ -16,7 +16,7 @@ Before starting this codelab, make sure that you've installed:
 
 ## Instructions
 
-1. Create and set up a Firebase project
+1. __Create and set up a Firebase project__
     1. Create a Firebase project
         - [In the Firebase console](https://console.firebase.google.com/), click Add project, then name the Firebase project "FirebaseRTC".
         - Remember the Project ID for your Firebase project.
@@ -33,7 +33,7 @@ Before starting this codelab, make sure that you've installed:
 
     For this specific codelab, you've already configured Firebase Hosting in the project you'll be cloning. However, for Cloud Firestore, we'll walk you through the configuration and enabling of the services using the Firebase console.
 
-1. Enable Cloud Firestore
+1. __Enable Cloud Firestore__
     The app uses Cloud Firestore to save the chat messages and receive new chat messages.
     1. In the Firebase sidebar, navigate to Build -> Cloud Firestore.
     1. Click __Create database__ in the Cloud Firestore pane.
@@ -41,7 +41,7 @@ Before starting this codelab, make sure that you've installed:
     Test mode ensures that you can freely write to the database during development. We'll make our database more secure later on in this codelab. 
         > TODO: ...this tutorial doesn't actually handle making the database more secure.
 
-1. Get the sample code
+1. __Get the sample code__
     1. On your local machine, clone the codelab GitHub repository from the command line:
         `git clone https://github.com/webrtc/FirebaseRTC`
         - The sample code should have been cloned into the FirebaseRTC directory. Make sure your command line is run from this directory from now on: 
@@ -50,7 +50,7 @@ Before starting this codelab, make sure that you've installed:
 
     As you work through the tutorial, open the files in `FirebaseRTC`in your editor and change them according to the instructions below. This directory contains the starting code for the codelab which consists of a not-yet functional WebRTC app. We'll make it functional throughout this codelab.
     
-1. Install the Firebase Command Line Interface
+1. __Install the Firebase Command Line Interface__
     The Firebase Command Line Interface (CLI) allows you to serve your web app locally and deploy your web app to Firebase Hosting.
     > Note: To install the CLI, you need to install npm which typically comes with Node.js.
     1. Install the CLI by running the following npm command: `sh npm -g install firebase-tools` 
@@ -68,7 +68,7 @@ Before starting this codelab, make sure that you've installed:
         - When prompted, select your Project ID (from the Create Firestore Project step), then give your Firebase project an alias.  An alias is useful if you have multiple environments (production, staging, etc). However, for this codelab, let's just use the alias of default.
     1. Follow the remaining instructions in your command line.
     
-1. Run the local server
+1. __Run the local server__
     You're ready to actually start work on our app! Let's run the app locally!
     1. Run the following Firebase CLI command: `sh firebase serve --only hosting`
         - `firebase serve --only hosting --interactive` on git-bash
@@ -79,92 +79,95 @@ Before starting this codelab, make sure that you've installed:
         You should see your copy of FirebaseRTC which has been connected to your Firebase project.
     The app has automatically connected to your Firebase project.
     
-1. Creating a new room
+1. __Creating a new room__
     In this application, each video chat session is called a __room__. A user can create a new room by clicking a button in their application. This will generate an ID that the remote party can use to join the same room. The ID is used as the key in Cloud Firestore for each room.
     
     Each room will contain the RTCSessionDescriptions for both the offer and the answer, as well as two separate collections with [ICE candidates](https://webrtcglossary.com/ice/#:~:text=ICE%20stands%20for%20Interactive%20Connectivity,NAT%20traversal%20used%20in%20WebRTC.) from each party.
 
-Your first task is to implement the missing code for creating a new room with the initial offer from the caller. Open public/app.js and find the comment // Add code for creating a room here and add the following code:
+    Your first task is to implement the missing code for creating a new room with the initial offer from the caller. Open public/app.js and find the comment // Add code for creating a room here and add the following code:
 
+    ```
+    const offer = await peerConnection.createOffer();
+    await peerConnection.setLocalDescription(offer);
 
-const offer = await peerConnection.createOffer();
-await peerConnection.setLocalDescription(offer);
-
-const roomWithOffer = {
-    offer: {
-        type: offer.type,
-        sdp: offer.sdp
+    const roomWithOffer = {
+        offer: {
+            type: offer.type,
+            sdp: offer.sdp
+        }
     }
-}
-const roomRef = await db.collection('rooms').add(roomWithOffer);
-const roomId = roomRef.id;
-document.querySelector('#currentRoom').innerText = `Current room is ${roomId} - You are the caller!`
-The first line creates an RTCSessionDescription that will represent the offer from the caller. This is then set as the local description, and finally written to the new room object in Cloud Firestore.
+    const roomRef = await db.collection('rooms').add(roomWithOffer);
+    const roomId = roomRef.id;
+    document.querySelector('#currentRoom').innerText = `Current room is ${roomId} - You are the caller!`
+    ```
+    The first line creates an RTCSessionDescription that will represent the offer from the caller. This is then set as the local description, and finally written to the new room object in Cloud Firestore.
 
-Next, we will listen for changes to the database and detect when an answer from the callee has been added.
+    Next, we will listen for changes to the database and detect when an answer from the callee has been added.
 
-
-roomRef.onSnapshot(async snapshot -> {
-    console.log('Got updated room:', snapshot.data());
-    const data = snapshot.data();
-    if (!peerConnection.currentRemoteDescription && data.answer) {
-        console.log('Set remote description: ', data.answer);
-        const answer = new RTCSessionDescription(data.answer)
-        await peerConnection.setRemoteDescription(answer);
-    }
-});
-This will wait until the callee writes the RTCSessionDescription for the answer, and set that as the remote description on the caller RTCPeerConnection.
-
-1) Joining a room
-The next step is to implement the logic for joining an existing room. The user does this by clicking the Join room button and entering the ID for the room to join. Your task here is to implement the creation of the RTCSessionDescription for the answer and update the room in the database accordingly.
-
-
-const offer = roomSnapshot.data().offer;
-await peerConnection.setRemoteDescription(offer);
-const answer = await peerConnection.createAnswer();
-await peerConnection.setLocalDescription(answer);
-
-const roomWithAnswer = {
-    answer: {
-        type: answer.type,
-        sdp: answer.sdp
-    }
-}
-await roomRef.update(roomWithAnswer);
-In the code above, we start by extracting the offer from the caller and creating a RTCSessionDescription that we set as the remote description. Next, we create the answer, set it as the local description, and update the database. The update of the database will trigger the onSnapshot callback on the caller side, which in turn will set the remote description based on the answer from the callee. This completes the exchange of the RTCSessionDescription objects between the caller and the callee.
-
-1) Collect ICE candidates
-Before the caller and callee can connect to each other, they also need to exchange ICE candidates that tell WebRTC how to connect to the remote peer. Your next task is to implement the code that listens for ICE candidates and adds them to a collection in the database. Find the function collectIceCandidates and add the following code:
-
-```
-async function collectIceCandidates(roomRef, peerConnection,
-                                    localName, remoteName) {
-    const candidatesCollection = roomRef.collection(localName);
-
-    peerConnection.addEventListener('icecandidate', event -> {
-        if (event.candidate) {
-            const json = event.candidate.toJSON();
-            candidatesCollection.add(json);
+    ```
+    roomRef.onSnapshot(async snapshot -> {
+        console.log('Got updated room:', snapshot.data());
+        const data = snapshot.data();
+        if (!peerConnection.currentRemoteDescription && data.answer) {
+            console.log('Set remote description: ', data.answer);
+            const answer = new RTCSessionDescription(data.answer)
+            await peerConnection.setRemoteDescription(answer);
         }
     });
+    ```
+    This will wait until the callee writes the RTCSessionDescription for the answer, and set that as the remote description on the caller RTCPeerConnection.
 
-    roomRef.collection(remoteName).onSnapshot(snapshot -> {
-        snapshot.docChanges().forEach(change -> {
-            if (change.type === "added") {
-                const candidate = new RTCIceCandidate(change.doc.data());
-                peerConneciton.addIceCandidate(candidate);
+1. __Joining a room__
+    The next step is to implement the logic for joining an existing room. The user does this by clicking the Join room button and entering the ID for the room to join. Your task here is to implement the creation of the RTCSessionDescription for the answer and update the room in the database accordingly.
+
+    ```
+    const offer = roomSnapshot.data().offer;
+    await peerConnection.setRemoteDescription(offer);
+    const answer = await peerConnection.createAnswer();
+    await peerConnection.setLocalDescription(answer);
+
+    const roomWithAnswer = {
+        answer: {
+            type: answer.type,
+            sdp: answer.sdp
+        }
+    }
+    await roomRef.update(roomWithAnswer);
+    ```
+    In the code above, we start by extracting the offer from the caller and creating a RTCSessionDescription that we set as the remote description. Next, we create the answer, set it as the local description, and update the database. The update of the database will trigger the onSnapshot callback on the caller side, which in turn will set the remote description based on the answer from the callee. This completes the exchange of the RTCSessionDescription objects between the caller and the callee.
+
+1. Collect ICE candidates
+    Before the caller and callee can connect to each other, they also need to exchange ICE candidates that tell WebRTC how to connect to the remote peer. Your next task is to implement the code that listens for ICE candidates and adds them to a collection in the database. Find the function collectIceCandidates and add the following code:
+
+    ```
+    async function collectIceCandidates(roomRef, peerConnection,
+                                        localName, remoteName) {
+        const candidatesCollection = roomRef.collection(localName);
+
+        peerConnection.addEventListener('icecandidate', event -> {
+            if (event.candidate) {
+                const json = event.candidate.toJSON();
+                candidatesCollection.add(json);
             }
         });
-    })
-}
-```
-This function does two things. It collects ICE candidates from the WebRTC API and adds them to the database, and listens for added ICE candidates from the remote peer and adds them to its RTCPeerConnection instance. It is important when listening to database changes to filter out anything that isn't a new addition, since we otherwise would have added the same set of ICE candidates over and over again.
 
-1) Conclusion
-In this codelab you learned how to implement signaling for WebRTC using Cloud Firestore, as well as how to use that for creating a simple video chat application.
+        roomRef.collection(remoteName).onSnapshot(snapshot -> {
+            snapshot.docChanges().forEach(change -> {
+                if (change.type === "added") {
+                    const candidate = new RTCIceCandidate(change.doc.data());
+                    peerConneciton.addIceCandidate(candidate);
+                }
+            });
+        })
+    }
+    ```
+    This function does two things. It collects ICE candidates from the WebRTC API and adds them to the database, and listens for added ICE candidates from the remote peer and adds them to its RTCPeerConnection instance. It is important when listening to database changes to filter out anything that isn't a new addition, since we otherwise would have added the same set of ICE candidates over and over again.
 
-To learn more, visit the following resources:
+1. Conclusion
+    In this codelab you learned how to implement signaling for WebRTC using Cloud Firestore, as well as how to use that for creating a simple video chat application.
 
-FirebaseRTC Source Code
-WebRTC samples
-Cloud Firestore
+    To learn more, visit the following resources:
+
+    FirebaseRTC Source Code
+    WebRTC samples
+    Cloud Firestore
