@@ -44,7 +44,7 @@ Before starting this codelab, make sure that you've installed:
 1. Get the sample code
     1. On your local machine, clone the codelab GitHub repository from the command line:
         `git clone https://github.com/webrtc/FirebaseRTC`
-        The sample code should have been cloned into the FirebaseRTC directory. Make sure your command line is run from this directory from now on: 
+        - The sample code should have been cloned into the FirebaseRTC directory. Make sure your command line is run from this directory from now on: 
         `cd FirebaseRTC`
     1. Import the starter app
 
@@ -72,7 +72,7 @@ Before starting this codelab, make sure that you've installed:
     You're ready to actually start work on our app! Let's run the app locally!
     1. Run the following Firebase CLI command: `sh firebase serve --only hosting`
         - `firebase serve --only hosting --interactive` on git-bash
-        Your command line should display the following response: 
+        - Your command line should display the following response: 
             > hosting: Local server: http://localhost:5000
         - We're using the Firebase Hosting emulator to serve our app locally. The web app should now be available from http://localhost:5000.
     1. Open your app at http://localhost:5000
@@ -80,9 +80,9 @@ Before starting this codelab, make sure that you've installed:
     The app has automatically connected to your Firebase project.
     
 1. Creating a new room
-In this application, each video chat session is called a room. A user can create a new room by clicking a button in their application. This will generate an ID that the remote party can use to join the same room. The ID is used as the key in Cloud Firestore for each room.
-
-Each room will contain the RTCSessionDescriptions for both the offer and the answer, as well as two separate collections with ICE candidates from each party.
+    In this application, each video chat session is called a __room__. A user can create a new room by clicking a button in their application. This will generate an ID that the remote party can use to join the same room. The ID is used as the key in Cloud Firestore for each room.
+    
+    Each room will contain the RTCSessionDescriptions for both the offer and the answer, as well as two separate collections with [ICE candidates](https://webrtcglossary.com/ice/#:~:text=ICE%20stands%20for%20Interactive%20Connectivity,NAT%20traversal%20used%20in%20WebRTC.) from each party.
 
 Your first task is to implement the missing code for creating a new room with the initial offer from the caller. Open public/app.js and find the comment // Add code for creating a room here and add the following code:
 
