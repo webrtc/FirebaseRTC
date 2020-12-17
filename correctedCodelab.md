@@ -20,10 +20,11 @@ Before starting this codelab, make sure that you've installed:
     1. Create a Firebase project
         - [In the Firebase console](https://console.firebase.google.com/), click Add project, then name the Firebase project "FirebaseRTC".
         - Remember the Project ID for your Firebase project.
-        - Disable Google Analytics and create the project
->Note: If you go to the home page of your project, you can see it in Settings > Project Settings (or look at the URL!)
-Click Create project.
-The application that you're going to build uses two Firebase services available on the web:
+            >Note: If you go to the home page of your project, you can see it in Settings > Project Settings (or look at the URL!)
+        - Disable Google Analytics
+        - Click Create project.
+
+    The application that you're going to build uses two Firebase services available on the web:
 
 Cloud Firestore to save structured data on the Cloud and get instant notification when the data is updated
 Firebase Hosting to host and serve your static assets
