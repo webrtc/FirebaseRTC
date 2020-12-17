@@ -38,7 +38,8 @@ Before starting this codelab, make sure that you've installed:
     1. In the Firebase sidebar, navigate to Build -> Cloud Firestore.
     1. Click __Create database__ in the Cloud Firestore pane.
     1. Select the __Start in test mode__ option, then click __Enable__ after reading the disclaimer about the security rules.
-    Test mode ensures that you can freely write to the database during development. We'll make our database more secure later on in this codelab. (TODO: ...this tutorial doesn't handle making the database more secure...just...so you know)
+    Test mode ensures that you can freely write to the database during development. We'll make our database more secure later on in this codelab. 
+        > TODO: ...this tutorial doesn't actually handle making the database more secure.
 
 1. Get the sample code
     1. On your local machine, clone the codelab GitHub repository from the command line:
@@ -68,20 +69,17 @@ Before starting this codelab, make sure that you've installed:
     1. Follow the remaining instructions in your command line.
     
 1. Run the local server
-You're ready to actually start work on our app! Let's run the app locally!
-
-Run the following Firebase CLI command: sh firebase serve --only hosting
-
-Your command line should display the following response: hosting: Local server: http://localhost:5000
-
-We're using the Firebase Hosting emulator to serve our app locally. The web app should now be available from http://localhost:5000.
-
-Open your app at http://localhost:5000.
-You should see your copy of FirebaseRTC which has been connected to your Firebase project.
-
-The app has automatically connected to your Firebase project.
-
-1) Creating a new room
+    You're ready to actually start work on our app! Let's run the app locally!
+    1. Run the following Firebase CLI command: `sh firebase serve --only hosting`
+        - `firebase serve --only hosting --interactive` on git-bash
+        Your command line should display the following response: 
+        > hosting: Local server: http://localhost:5000
+        We're using the Firebase Hosting emulator to serve our app locally. The web app should now be available from [](http://localhost:5000).
+    1. Open your app at [](http://localhost:5000)
+        You should see your copy of FirebaseRTC which has been connected to your Firebase project.
+    The app has automatically connected to your Firebase project.
+    
+1. Creating a new room
 In this application, each video chat session is called a room. A user can create a new room by clicking a button in their application. This will generate an ID that the remote party can use to join the same room. The ID is used as the key in Cloud Firestore for each room.
 
 Each room will contain the RTCSessionDescriptions for both the offer and the answer, as well as two separate collections with ICE candidates from each party.
