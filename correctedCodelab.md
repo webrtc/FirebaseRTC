@@ -23,7 +23,7 @@ Before starting this codelab, make sure that you've installed:
             >Note: If you go to the home page of your project, you can see it in Settings > Project Settings (or look at the URL!)
         - Disable Google Analytics
         - Click Create project.
-        - Creation takes a moment.  When you project is created, click Continue.
+        - Creation takes a moment.  When your project is created, click Continue.
 
     The application that you're going to build uses two Firebase services available on the web:
     * Cloud Firestore
@@ -50,26 +50,24 @@ Before starting this codelab, make sure that you've installed:
     As you work through the tutorial, open the files in `FirebaseRTC`in your editor and change them according to the instructions below. This directory contains the starting code for the codelab which consists of a not-yet functional WebRTC app. We'll make it functional throughout this codelab.
     
 1. Install the Firebase Command Line Interface
-The Firebase Command Line Interface (CLI) allows you to serve your web app locally and deploy your web app to Firebase Hosting.
-
-Note: To install the CLI, you need to install npm which typically comes with Node.js.
-Install the CLI by running the following npm command: sh npm -g install firebase-tools
-Note: Doesn't work? You may need to run the command using sudo instead.
-Verify that the CLI has been installed correctly by running the following command: sh firebase --version
-Make sure the version of the Firebase CLI is v6.7.1 or later.
-
-Authorize the Firebase CLI by running the following command: sh firebase login
-You've set up the web app template to pull your app's configuration for Firebase Hosting from your app's local directory and files. But to do this, you need to associate your app with your Firebase project.
-
-Associate your app with your Firebase project by running the following command: sh firebase use --add
-
-When prompted, select your Project ID, then give your Firebase project an alias.
-
-An alias is useful if you have multiple environments (production, staging, etc). However, for this codelab, let's just use the alias of default.
-
-Follow the remaining instructions in your command line.
-
-1) Run the local server
+    The Firebase Command Line Interface (CLI) allows you to serve your web app locally and deploy your web app to Firebase Hosting.
+    > Note: To install the CLI, you need to install npm which typically comes with Node.js.
+    1. Install the CLI by running the following npm command: `sh npm -g install firebase-tools` 
+        - if you're in git-bash, run `npm -g install firebase-tools` instead. 
+        - On unix and doesn't work? You may need to run the command using sudo instead.
+    1. Verify that the CLI has been installed correctly by running the following command: `sh firebase --version`
+        - `firebase --version` on git-bash
+        - Make sure the version of the Firebase CLI is v6.7.1 or later.
+    1. Authorize the Firebase CLI by running the following command: `sh firebase login`
+        - `firebase login --interactive` on git-bash
+    
+    You've set up the web app template to pull your app's configuration for Firebase Hosting from your app's local directory and files. But to do this, you need to associate your app with your Firebase project.
+    1. Associate your app with your Firebase project by running the following command: `sh firebase use --add`
+        - `firebase use --add --interactive` on git-bash
+        - When prompted, select your Project ID (from the Create Firestore Project step), then give your Firebase project an alias.  An alias is useful if you have multiple environments (production, staging, etc). However, for this codelab, let's just use the alias of default.
+    1. Follow the remaining instructions in your command line.
+    
+1. Run the local server
 You're ready to actually start work on our app! Let's run the app locally!
 
 Run the following Firebase CLI command: sh firebase serve --only hosting
