@@ -55,21 +55,7 @@ async function createRoom() {
   // Code for collecting ICE candidates above
 
   // Code for creating a room below
-  const offer = await peerConnection.createOffer();
-  await peerConnection.setLocalDescription(offer);
-  console.log('Created offer:', offer);
 
-  const roomWithOffer = {
-    'offer': {
-      type: offer.type,
-      sdp: offer.sdp,
-    },
-  };
-  await roomRef.set(roomWithOffer);
-  roomId = roomRef.id;
-  console.log(`New room created with SDP offer. Room ID: ${roomRef.id}`);
-  document.querySelector(
-      '#currentRoom').innerText = `Current room is ${roomRef.id} - You are the caller!`;
   // Code for creating a room above
 
   peerConnection.addEventListener('track', event => {
