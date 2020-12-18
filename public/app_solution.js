@@ -133,20 +133,7 @@ async function joinRoomById(roomId) {
     });
 
     // Code for creating SDP answer below
-    const offer = roomSnapshot.data().offer;
-    console.log('Got offer:', offer);
-    await peerConnection.setRemoteDescription(new RTCSessionDescription(offer));
-    const answer = await peerConnection.createAnswer();
-    console.log('Created answer:', answer);
-    await peerConnection.setLocalDescription(answer);
 
-    const roomWithAnswer = {
-      answer: {
-        type: answer.type,
-        sdp: answer.sdp,
-      },
-    };
-    await roomRef.update(roomWithAnswer);
     // Code for creating SDP answer above
 
     // Listening for remote ICE candidates below
