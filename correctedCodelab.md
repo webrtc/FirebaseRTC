@@ -86,40 +86,40 @@ Before starting this codelab, make sure that you've installed:
     
     In this application, each video chat session is called a __room__. A user can create a new room by clicking a button in their application. This will generate an ID that the remote party can use to join the same room. The ID is used as the key in Cloud Firestore for each room.
     
-    Each room will contain the RTCSessionDescriptions for both the offer and the answer, as well as two separate collections with [ICE candidates](https://webrtcglossary.com/ice/#:~:text=ICE%20stands%20for%20Interactive%20Connectivity,NAT%20traversal%20used%20in%20WebRTC.) from each party.
+    Each room will contain the `RTCSessionDescriptions` for both the offer and the answer, as well as two separate collections with [ICE candidates](https://webrtcglossary.com/ice/#:~:text=ICE%20stands%20for%20Interactive%20Connectivity,NAT%20traversal%20used%20in%20WebRTC.) from each party.
 
-    Your first task is to implement the missing code for creating a new room with the initial offer from the caller. Open public/app.js and find the comment // Add code for creating a room here and add the following code:
+    Your first task is to implement the missing code for creating a new room with the initial offer from the caller. Open public/app.js and find the comment `// Add code for creating a room here` and add the following code:
 
     ```
     const offer = await peerConnection.createOffer();
     await peerConnection.setLocalDescription(offer);
-
+    console.log('Created offer:', offer);
     const roomWithOffer = {
-        offer: {
+        'offer': {
             type: offer.type,
             sdp: offer.sdp
         }
     }
-    const roomRef = await db.collection('rooms').add(roomWithOffer);
-    const roomId = roomRef.id;
+    await roomRef.set(roomWithOffer);
+    roomId = roomRef.id;
+    console.log('New room created with SDP offer. Room ID: ${roomRef.id}');
     document.querySelector('#currentRoom').innerText = `Current room is ${roomId} - You are the caller!`
     ```
-    The first line creates an RTCSessionDescription that will represent the offer from the caller. This is then set as the local description, and finally written to the new room object in Cloud Firestore.
+    The first line creates an `RTCSessionDescription` that will represent the offer from the caller. This is then set as the local description and, finally, written to the new room object in Cloud Firestore.
 
-    Next, we will listen for changes to the database and detect when an answer from the callee has been added.
+    Next, we will listen for changes to the database and detect when an answer from the callee has been added.  Find the comment `// Listening for remote session description below` and add the following code:
 
     ```
-    roomRef.onSnapshot(async snapshot -> {
-        console.log('Got updated room:', snapshot.data());
-        const data = snapshot.data();
-        if (!peerConnection.currentRemoteDescription && data.answer) {
-            console.log('Set remote description: ', data.answer);
-            const answer = new RTCSessionDescription(data.answer)
-            await peerConnection.setRemoteDescription(answer);
-        }
-    });
+    roomRef.onSnapshot(async snapshot => {
+    const data = snapshot.data();
+    if (!peerConnection.currentRemoteDescription && data && data.answer) {
+      console.log('Got remote description: ', data.answer);
+      const rtcSessionDescription = new RTCSessionDescription(data.answer);
+      await peerConnection.setRemoteDescription(rtcSessionDescription);
+    }
+  });
     ```
-    This will wait until the callee writes the RTCSessionDescription for the answer, and set that as the remote description on the caller RTCPeerConnection.
+   This will wait until the callee writes the `RTCSessionDescription` for the answer, and set that as the remote description on the caller `RTCPeerConnection`.
 
 1. __Joining a room__
     
