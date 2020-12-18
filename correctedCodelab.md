@@ -117,33 +117,35 @@ Before starting this codelab, make sure that you've installed:
       const rtcSessionDescription = new RTCSessionDescription(data.answer);
       await peerConnection.setRemoteDescription(rtcSessionDescription);
     }
-  });
+    });
     ```
-   This will wait until the callee writes the `RTCSessionDescription` for the answer, and set that as the remote description on the caller `RTCPeerConnection`.
+    This will wait until the callee writes the `RTCSessionDescription` for the answer, and set that as the remote description on the caller `RTCPeerConnection`.
 
 1. __Joining a room__
     
-    The next step is to implement the logic for joining an existing room. The user does this by clicking the Join room button and entering the ID for the room to join. Your task here is to implement the creation of the RTCSessionDescription for the answer and update the room in the database accordingly.
+    The next step is to implement the logic for joining an existing room. The user does this by clicking the "Join room" button and entering the ID for the room to join. Your task here is to implement the creation of the `RTCSessionDescription` for the answer and update the room in the database accordingly.  Find the comment `// Code for creating SDP answer below` in the `joinRoomById(roomId)` method and add the following code:
 
     ```
     const offer = roomSnapshot.data().offer;
-    await peerConnection.setRemoteDescription(offer);
+    console.log('Got offer:', offer);
+    await peerConnection.setRemoteDescription(new RTCSessionDescription(offer));
     const answer = await peerConnection.createAnswer();
+    console.log('Created answer:', answer);
     await peerConnection.setLocalDescription(answer);
 
     const roomWithAnswer = {
-        answer: {
-            type: answer.type,
-            sdp: answer.sdp
-        }
-    }
+      answer: {
+        type: answer.type,
+        sdp: answer.sdp,
+      },
+    };
     await roomRef.update(roomWithAnswer);
     ```
-    In the code above, we start by extracting the offer from the caller and creating a RTCSessionDescription that we set as the remote description. Next, we create the answer, set it as the local description, and update the database. The update of the database will trigger the onSnapshot callback on the caller side, which in turn will set the remote description based on the answer from the callee. This completes the exchange of the RTCSessionDescription objects between the caller and the callee.
+    In the code above, we start by extracting the offer from the caller and creating a `RTCSessionDescription` that we set as the remote description. Next, we create the answer, set it as the local description, and update the database. The update of the database will trigger the `onSnapshot` callback on the caller side which, in turn, will set the remote description based on the answer from the callee. This completes the exchange of the `RTCSessionDescription` objects between the caller and the callee.
 
-1. Collect ICE candidates
+1. __Collect ICE candidates__
     
-    Before the caller and callee can connect to each other, they also need to exchange ICE candidates that tell WebRTC how to connect to the remote peer. Your next task is to implement the code that listens for ICE candidates and adds them to a collection in the database. Find the function collectIceCandidates and add the following code:
+    Before the caller and callee can connect to each other, they also need to exchange ICE candidates that tell WebRTC how to connect to the remote peer. Your next task is to implement the code that listens for ICE candidates and adds them to a collection in the database. Find the comment `// collect ICE Candidates function below` and add the following function:
 
     ```
     async function collectIceCandidates(roomRef, peerConnection,
@@ -167,7 +169,9 @@ Before starting this codelab, make sure that you've installed:
         })
     }
     ```
-    This function does two things. It collects ICE candidates from the WebRTC API and adds them to the database, and listens for added ICE candidates from the remote peer and adds them to its RTCPeerConnection instance. It is important when listening to database changes to filter out anything that isn't a new addition, since we otherwise would have added the same set of ICE candidates over and over again.
+    This function does two things. It collects ICE candidates from the WebRTC API and adds them to the database, and listens for added ICE candidates from the remote peer and adds them to its `RTCPeerConnection` instance. It is important when listening to database changes to filter out anything that isn't a new addition, since we otherwise would have added the same set of ICE candidates over and over again.
+    
+    Complete this step by uncommenting the calls to this function in both the `joinRoomById` and `createRoom` methods.
 
 1. Conclusion
     
