@@ -181,7 +181,7 @@ Before starting this codelab, make sure that you've installed:
     
     Complete this step by uncommenting the calls to this function in both the `joinRoomById` and `createRoom` methods.
 
-1. Conclusion
+1. __Conclusion__
     
     In this codelab you learned how to implement signaling for WebRTC using Cloud Firestore, as well as how to use that for creating a simple video chat application.
 
