@@ -5,6 +5,8 @@
   The solution to this codelab can be seen in the _solution_ branch.
 
   See http://webrtc.org for details.
+  
+Note: the following instructions were copied and updated/corrected from https://webrtc.org/getting-started/firebase-rtc-codelab.
 
 ## Introduction
 
