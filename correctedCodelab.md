@@ -39,8 +39,7 @@ Before starting this codelab, make sure that you've installed:
     1. In the Firebase sidebar, navigate to Build -> Cloud Firestore.
     1. Click __Create database__ in the Cloud Firestore pane.
     1. Select the __Start in test mode__ option, then click __Enable__ after reading the disclaimer about the security rules.
-    Test mode ensures that you can freely write to the database during development. We'll make our database more secure later on in this codelab. 
-        > TODO: ...this tutorial doesn't actually handle making the database more secure.
+    Test mode ensures that you can freely write to the database during development. 
 
 1. __Get the sample code__
     1. On your local machine, clone the codelab GitHub repository from the command line:
@@ -49,7 +48,7 @@ Before starting this codelab, make sure that you've installed:
         `cd FirebaseRTC`
     1. Import the starter app
 
-    As you work through the tutorial, open the files in `FirebaseRTC`in your editor and change them according to the instructions below. This directory contains the starting code for the codelab which consists of a not-yet functional WebRTC app. We'll make it functional throughout this codelab.
+    As you work through the tutorial, open the files in `FirebaseRTC` in your editor and change them according to the instructions below. This directory contains the starting code for the codelab which consists of a not-yet functional WebRTC app. We'll make it functional throughout this codelab.
     
 1. __Install the Firebase Command Line Interface__
     
@@ -182,6 +181,6 @@ Before starting this codelab, make sure that you've installed:
 
     To learn more, visit the following resources:
 
-    FirebaseRTC Source Code
-    WebRTC samples
-    Cloud Firestore
+    * [FirebaseRTC Source Code](https://github.com/webrtc/FirebaseRTC)
+    * [WebRTC samples](https://webrtc.github.io/samples)
+    * [Cloud Firestore](https://firebase.google.com/docs/firestore/)
