@@ -67,14 +67,7 @@ async function createRoom() {
   });
 
   // Listening for remote session description below
-  roomRef.onSnapshot(async snapshot => {
-    const data = snapshot.data();
-    if (!peerConnection.currentRemoteDescription && data && data.answer) {
-      console.log('Got remote description: ', data.answer);
-      const rtcSessionDescription = new RTCSessionDescription(data.answer);
-      await peerConnection.setRemoteDescription(rtcSessionDescription);
-    }
-  });
+
   // Listening for remote session description above
 
   // Listen for remote ICE candidates below
