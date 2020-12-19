@@ -178,8 +178,8 @@ Before starting this codelab, make sure that you've installed:
     }
     ```
     This function does two main things. 
-        * collects ICE candidates from the WebRTC API and adds them to the database
-        * listens for added ICE candidates from the remote peer and adds them to its `RTCPeerConnection` instance. 
+      * collects ICE candidates from the WebRTC API and adds them to the database
+      * listens for added ICE candidates from the remote peer and adds them to its `RTCPeerConnection` instance. 
     It is important when listening to database changes to filter out anything that isn't a new addition, since we otherwise would have added the same set of ICE candidates over and over again.
     
     Complete this step by uncommenting the calls to this function in both the `joinRoomById` and `createRoom` methods; you can find them after `// Uncomment to collect ICE candidates below`.
