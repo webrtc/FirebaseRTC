@@ -149,7 +149,7 @@ Before starting this codelab, make sure that you've installed:
     };
     await roomRef.update(roomWithAnswer);
     ```
-    In the code above, we start by extracting the offer from the caller and creating a `RTCSessionDescription` that we set as the remote description. Next, we create the answer, set it as the local description, and update the database. The update of the database will trigger the `onSnapshot` callback that we added in the previous on the caller side. That callback will set the remote description based on the answer from the callee. This completes the exchange of the `RTCSessionDescription` objects between the caller and the callee.
+    In the code above, we start by extracting the offer from the caller and creating a `RTCSessionDescription` that we set as the remote description. Next, we create the answer, set it as the local description, and update the database. The update of the database will trigger the `onSnapshot` callback that we added in the previous step on the caller side. That callback will set the remote description based on the answer from the callee. This completes the exchange of the `RTCSessionDescription` objects between the caller and the callee.
 
 1. __Collect ICE candidates__
     
