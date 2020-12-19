@@ -26,7 +26,7 @@ Before starting this codelab, make sure that you've installed:
 
 1. __Create and set up a Firebase project__
     1. Create a Firebase project
-        - [In the Firebase console](https://console.firebase.google.com/), click Add project, then name the Firebase project "FirebaseRTC".
+        - [In the Firebase console](https://console.firebase.google.com/), click __Create a project__, then name the Firebase project "FirebaseRTC".
         - Remember the Project ID for your Firebase project.
             >Note: If you go to the home page of your project, you can see it in Settings > Project Settings (or look at the URL!)
         - Disable Google Analytics
@@ -46,15 +46,15 @@ Before starting this codelab, make sure that you've installed:
     The app uses Cloud Firestore to save the chat messages and receive new chat messages.
     1. In the Firebase sidebar, navigate to Build -> Cloud Firestore.
     1. Click __Create database__ in the Cloud Firestore pane.
-    1. Select the __Start in test mode__ option, then click __Enable__ after reading the disclaimer about the security rules.
+    1. Select the __Start in test mode__ option, read the warning about database security, and click __Next__. Then click __Enable__ after reading the warning about the security rules.
     Test mode ensures that you can freely write to the database during development. 
 
 1. __Get the sample code__
     1. On your local machine, clone the codelab GitHub repository from the command line:
-        `git clone https://github.com/webrtc/FirebaseRTC`
-        - The sample code should have been cloned into the FirebaseRTC directory. Make sure your command line is run from this directory from now on: 
+        `git clone https://github.com/webrtc/FirebaseRTC` \[__DELETE in PR:__ for now, use `git clone https://github.com/meldaravaniel/FirebaseRTC`\]
+        - The sample code should have been cloned into the FirebaseRTC directory.
+    1. Make sure your command line is run from this directory from now on by executing 
         `cd FirebaseRTC`
-    1. Import the starter app
 
     As you work through the tutorial, open the files in `FirebaseRTC` in your editor and change them according to the instructions below. This directory contains the starting code for the codelab which consists of a not-yet functional WebRTC app. We'll make it functional throughout this codelab.
     
@@ -88,6 +88,7 @@ Before starting this codelab, make sure that you've installed:
     1. Open your app at http://localhost:5000
         You should see your copy of FirebaseRTC which has been connected to your Firebase project.
     The app has automatically connected to your Firebase project.
+    > Note: if you want to access the server from other devices on your local network, you need to add `-o 0.0.0.0` at the end of the `firebase serve` command.
     
 1. __Creating a new room__
     
@@ -95,7 +96,7 @@ Before starting this codelab, make sure that you've installed:
     
     Each room will contain the `RTCSessionDescriptions` for both the offer and the answer, as well as two separate collections with [ICE candidates](https://webrtcglossary.com/ice/#:~:text=ICE%20stands%20for%20Interactive%20Connectivity,NAT%20traversal%20used%20in%20WebRTC.) from each party.
 
-    Your first task is to implement the missing code for creating a new room with the initial offer from the caller. Open public/app.js and find the comment `// Add code for creating a room here` and add the following code:
+    Your first task is to implement the missing code for creating a new room with the initial offer from the caller. Open public/app.js, find the comment `// Add code for creating a room below`, and add the following code. (You should add the code before the corresponding `// Add code for creating a room above`; the same goes for the rest of the code blocks.)
 
     ```
     const offer = await peerConnection.createOffer();
@@ -148,7 +149,7 @@ Before starting this codelab, make sure that you've installed:
     };
     await roomRef.update(roomWithAnswer);
     ```
-    In the code above, we start by extracting the offer from the caller and creating a `RTCSessionDescription` that we set as the remote description. Next, we create the answer, set it as the local description, and update the database. The update of the database will trigger the `onSnapshot` callback on the caller side which, in turn, will set the remote description based on the answer from the callee. This completes the exchange of the `RTCSessionDescription` objects between the caller and the callee.
+    In the code above, we start by extracting the offer from the caller and creating a `RTCSessionDescription` that we set as the remote description. Next, we create the answer, set it as the local description, and update the database. The update of the database will trigger the `onSnapshot` callback that we added in the previous on the caller side. That callback will set the remote description based on the answer from the callee. This completes the exchange of the `RTCSessionDescription` objects between the caller and the callee.
 
 1. __Collect ICE candidates__
     
@@ -159,18 +160,18 @@ Before starting this codelab, make sure that you've installed:
                                         localName, remoteName) {
         const candidatesCollection = roomRef.collection(localName);
 
-        peerConnection.addEventListener('icecandidate', event -> {
+        peerConnection.addEventListener('icecandidate', event => {
             if (event.candidate) {
                 const json = event.candidate.toJSON();
                 candidatesCollection.add(json);
             }
         });
 
-        roomRef.collection(remoteName).onSnapshot(snapshot -> {
-            snapshot.docChanges().forEach(change -> {
+        roomRef.collection(remoteName).onSnapshot(snapshot => {
+            snapshot.docChanges().forEach(change => {
                 if (change.type === "added") {
                     const candidate = new RTCIceCandidate(change.doc.data());
-                    peerConneciton.addIceCandidate(candidate);
+                    peerConnection.addIceCandidate(candidate);
                 }
             });
         })
@@ -181,7 +182,23 @@ Before starting this codelab, make sure that you've installed:
         * listens for added ICE candidates from the remote peer and adds them to its `RTCPeerConnection` instance. 
     It is important when listening to database changes to filter out anything that isn't a new addition, since we otherwise would have added the same set of ICE candidates over and over again.
     
-    Complete this step by uncommenting the calls to this function in both the `joinRoomById` and `createRoom` methods.
+    Complete this step by uncommenting the calls to this function in both the `joinRoomById` and `createRoom` methods; you can find them after `// Uncomment to collect ICE candidates below`.
+
+1. __Try it out__
+
+    1. Open a new browswer tab at http://localhost:5000, or refresh the tab you opened above.
+    1. Mute your speakers to avoid loud piercing feedback!
+    1. Click on __Open camera & microphone__; give permission to the app to use them, if requested.
+    1. Click on __Create room__. The app will display the room ID.
+    1. Open another browswer tab, click __Open camera & microphone__, and click __Join room__. Paste in the ID from the previous step. The two instances should connect.
+    
+    To connect with a different device on your local network:
+    
+    1. Make sure that your start the server with `-o 0.0.0.0`. 
+    1. Find the IP address of your server. Let's say it's `192.168.1.5`.
+    1. On your remote device, you need to enable the camera for "insecure orgins," since you are connecting to the server via http, not https. For Chrome, you can do this by navigating to `chrome://flags/#unsafely-treat-insecure-origin-as-secure`, and adding `http://192.168.1.5:5000/` to the list of origins.
+    1. Connect as above, except that you will have to enter the room ID manually.
+
 
 1. __Conclusion__
     
