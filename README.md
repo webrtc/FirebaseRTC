@@ -108,7 +108,7 @@ Before starting this codelab, make sure that you've installed:
     }
     await roomRef.set(roomWithOffer);
     roomId = roomRef.id;
-    console.log('New room created with SDP offer. Room ID: ${roomRef.id}');
+    console.log(`New room created with SDP offer. Room ID: ${roomRef.id}`);
     document.querySelector('#currentRoom').innerText = `Current room is ${roomId} - You are the caller!`
     ```
     The first line creates an `RTCSessionDescription` that will represent the offer from the caller. This is then set as the local description and, finally, written to the new room object in Cloud Firestore.
@@ -117,12 +117,12 @@ Before starting this codelab, make sure that you've installed:
 
     ```
     roomRef.onSnapshot(async snapshot => {
-    const data = snapshot.data();
-    if (!peerConnection.currentRemoteDescription && data && data.answer) {
-      console.log('Got remote description: ', data.answer);
-      const rtcSessionDescription = new RTCSessionDescription(data.answer);
-      await peerConnection.setRemoteDescription(rtcSessionDescription);
-    }
+      const data = snapshot.data();
+      if (!peerConnection.currentRemoteDescription && data && data.answer) {
+        console.log('Got remote description: ', data.answer);
+        const rtcSessionDescription = new RTCSessionDescription(data.answer);
+        await peerConnection.setRemoteDescription(rtcSessionDescription);
+      }
     });
     ```
     This will wait until the callee writes the `RTCSessionDescription` for the answer, and set that as the remote description on the caller `RTCPeerConnection`.
