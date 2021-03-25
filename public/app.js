@@ -161,16 +161,18 @@ async function hangUp(e) {
   // Delete room on hangup
   if (roomId) {
     const db = firebase.firestore();
+    const batch = db.batch();
     const roomRef = db.collection('rooms').doc(roomId);
     const calleeCandidates = await roomRef.collection('calleeCandidates').get();
-    calleeCandidates.forEach(async candidate => {
-      await candidate.delete();
+    calleeCandidates.forEach(candidate => {
+      batch.delete(candidate.ref);
     });
     const callerCandidates = await roomRef.collection('callerCandidates').get();
-    callerCandidates.forEach(async candidate => {
-      await candidate.delete();
+    callerCandidates.forEach(candidate => {
+      batch.delete(candidate.ref);
     });
-    await roomRef.delete();
+    batch.delete(roomRef);
+    await batch.commit();
   }
 
   document.location.reload(true);
