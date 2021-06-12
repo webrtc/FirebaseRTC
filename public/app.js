@@ -190,7 +190,7 @@ function registerPeerConnectionListeners() {
     console.log(`Signaling state change: ${peerConnection.signalingState}`);
   });
 
-  peerConnection.addEventListener('iceconnectionstatechange ', () => {
+  peerConnection.addEventListener('iceconnectionstatechange', () => {
     console.log(
         `ICE connection state change: ${peerConnection.iceConnectionState}`);
   });
