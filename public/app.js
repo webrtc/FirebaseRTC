@@ -1,6 +1,5 @@
 mdc.ripple.MDCRipple.attachTo(document.querySelector('.mdc-button'));
 
-// DEfault configuration - Change these if you have a different STUN or TURN server.
 const configuration = {
   iceServers: [
     {
@@ -12,6 +11,9 @@ const configuration = {
   ],
   iceCandidatePoolSize: 10,
 };
+
+const callerCandidatesString = 'callerCandidates';
+const calleeCandidatesString = 'calleeCandidates';
 
 let peerConnection = null;
 let localStream = null;
@@ -31,27 +33,24 @@ async function createRoom() {
   document.querySelector('#createBtn').disabled = true;
   document.querySelector('#joinBtn').disabled = true;
   const db = firebase.firestore();
+  const roomRef = await db.collection('rooms').doc();
 
   console.log('Create PeerConnection with configuration: ', configuration);
   peerConnection = new RTCPeerConnection(configuration);
 
   registerPeerConnectionListeners();
 
-  // Add code for creating a room here
-  
-  // Code for creating room above
-  
   localStream.getTracks().forEach(track => {
     peerConnection.addTrack(track, localStream);
   });
 
+
+  // Uncomment to collect ICE candidates below
+  // await collectIceCandidates(roomRef, peerConnection, callerCandidatesString, calleeCandidatesString);
+  
   // Code for creating a room below
 
   // Code for creating a room above
-
-  // Code for collecting ICE candidates below
-
-  // Code for collecting ICE candidates above
 
   peerConnection.addEventListener('track', event => {
     console.log('Got remote track:', event.streams[0]);
@@ -64,10 +63,6 @@ async function createRoom() {
   // Listening for remote session description below
 
   // Listening for remote session description above
-
-  // Listen for remote ICE candidates below
-
-  // Listen for remote ICE candidates above
 }
 
 function joinRoom() {
@@ -99,9 +94,9 @@ async function joinRoomById(roomId) {
       peerConnection.addTrack(track, localStream);
     });
 
-    // Code for collecting ICE candidates below
 
-    // Code for collecting ICE candidates above
+    // Uncomment to collect ICE candidates below
+    // await collectIceCandidates(roomRef, peerConnection, calleeCandidatesString, callerCandidatesString);
 
     peerConnection.addEventListener('track', event => {
       console.log('Got remote track:', event.streams[0]);
@@ -114,12 +109,12 @@ async function joinRoomById(roomId) {
     // Code for creating SDP answer below
 
     // Code for creating SDP answer above
-
-    // Listening for remote ICE candidates below
-
-    // Listening for remote ICE candidates above
   }
 }
+
+// collect ICE Candidates function below
+
+// collect ICE Candidates function above
 
 async function openUserMedia(e) {
   const stream = await navigator.mediaDevices.getUserMedia(
@@ -162,13 +157,13 @@ async function hangUp(e) {
   if (roomId) {
     const db = firebase.firestore();
     const roomRef = db.collection('rooms').doc(roomId);
-    const calleeCandidates = await roomRef.collection('calleeCandidates').get();
+    const calleeCandidates = await roomRef.collection(calleeCandidatesString).get();
     calleeCandidates.forEach(async candidate => {
-      await candidate.delete();
+      await candidate.ref.delete();
     });
-    const callerCandidates = await roomRef.collection('callerCandidates').get();
+    const callerCandidates = await roomRef.collection(callerCandidatesString).get();
     callerCandidates.forEach(async candidate => {
-      await candidate.delete();
+      await candidate.ref.delete();
     });
     await roomRef.delete();
   }
